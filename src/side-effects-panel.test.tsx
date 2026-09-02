@@ -18,8 +18,8 @@ describe('SideEffectsPanel', () => {
   it('renders common and serious side effects with a counselling note', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [
-        { id: '1', name: 'Nausea', serious: false },
-        { id: '2', name: 'Anaphylaxis', serious: true, action: 'Stop the drug immediately' },
+        { id: '1', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
       ],
       error: null,
       isLoading: false,
@@ -27,9 +27,28 @@ describe('SideEffectsPanel', () => {
 
     render(<SideEffectsPanel drugUuid="drug-uuid" />);
 
+    expect(screen.getByText('Common')).toBeInTheDocument();
+    expect(screen.getByText('Serious')).toBeInTheDocument();
     expect(screen.getByText('Nausea')).toBeInTheDocument();
     expect(screen.getByText('Anaphylaxis')).toBeInTheDocument();
     expect(screen.getByText(/Counsel the patient/i)).toBeInTheDocument();
+  });
+
+  it('gives an unrecognised classification its own heading instead of folding it into Common', () => {
+    mockUseMedicationSideEffects.mockReturnValue({
+      sideEffects: [
+        { id: '1', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Tinnitus', classification: 'RARE' },
+      ],
+      error: null,
+      isLoading: false,
+    });
+
+    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    expect(screen.getByText('Common')).toBeInTheDocument();
+    expect(screen.getByText('RARE')).toBeInTheDocument();
+    expect(screen.getByText('Tinnitus')).toBeInTheDocument();
   });
 
   it('renders nothing when the feature is disabled', () => {

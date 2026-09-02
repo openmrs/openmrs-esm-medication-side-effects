@@ -8,7 +8,7 @@
     {
       "name": "medication-side-effects-panel",
       "component": "sideEffectsPanel",
-      "slot": "order-form-side-effects-slot"
+      "slot": "drug-order-form-side-effects-slot"
     },
     {
       "name": "medication-side-effects-panel-dispensing",

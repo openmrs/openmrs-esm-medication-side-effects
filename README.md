@@ -8,12 +8,12 @@ implemented and maintained in exactly one place.
 ## How it works
 
 - The panel is registered as an extension named `sideEffectsPanel` and plugged into two slots:
-  - `order-form-side-effects-slot` — rendered on the drug order form in the patient chart.
+  - `drug-order-form-side-effects-slot` — rendered on the drug order form in the patient chart.
   - `dispensing-prescription-side-effects-slot` — rendered on the prescription details in the dispensing app.
 - A host renders the slot and passes the selected drug's uuid via slot state, e.g.:
 
   ```tsx
-  <ExtensionSlot name="order-form-side-effects-slot" state={{ drugUuid }} />
+  <ExtensionSlot name="drug-order-form-side-effects-slot" state={{ drugUuid }} />
   ```
 
 - The panel reads side-effect data from the `medicationsideeffects` backend module over REST:
@@ -47,4 +47,3 @@ yarn verify # lint, test and type-check
 Requires the [`medicationsideeffects`](https://github.com/openmrs/openmrs-module-medicationsideeffects)
 OpenMRS module, which exposes the REST resource consumed here. Side-effect data is loaded via the
 Initializer module.
->>>>>>> 9fb51e2 (O3-5907: Added medication side effects microfrontend)

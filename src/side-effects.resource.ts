@@ -4,7 +4,7 @@ import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 export interface SideEffect {
   id: string;
   name: string;
-  serious: boolean;
+  classification?: string;
   action?: string;
 }
 
@@ -33,7 +33,7 @@ export function useMedicationSideEffects(drugUuid?: string) {
   const sideEffects: Array<SideEffect> = (data?.data?.results ?? []).map((result) => ({
     id: result.uuid,
     name: result.display,
-    serious: result.classification === 'SERIOUS',
+    classification: result.classification,
     action: result.recommendedAction,
   }));
 

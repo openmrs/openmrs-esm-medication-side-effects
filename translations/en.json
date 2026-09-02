@@ -2,6 +2,7 @@
   "commonSideEffects": "Common",
   "counselPatientOnSideEffects": "Counsel the patient on the above side effects",
   "knownSideEffects": "Known side effects",
+  "otherSideEffects": "Other",
   "recommendedAction": "Recommended action",
   "seriousSideEffects": "Serious",
   "sideEffectsLoadError": "Unable to load side effects"

@@ -11,10 +11,12 @@ interface SideEffectsPanelProps {
   drugUuid?: string;
 }
 
+type TagType = 'teal' | 'magenta' | 'gray';
+
 const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   const { t } = useTranslation();
   const { displaySideEffects } = useConfig<ConfigObject>();
-  const { sideEffects, error, isLoading } = useMedicationSideEffects(drugUuid);
+  const { sideEffects, error, isLoading } = useMedicationSideEffects(displaySideEffects ? drugUuid : undefined);
 
   if (!displaySideEffects || !drugUuid) {
     return null;
@@ -39,12 +41,35 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
     return null;
   }
 
-  const common = sideEffects.filter((sideEffect) => !sideEffect.serious);
-  const serious = sideEffects.filter((sideEffect) => sideEffect.serious);
+  const groupMeta = (classification: string | undefined): { label: string; tagType: TagType } => {
+    switch (classification) {
+      case 'COMMON':
+        return { label: t('commonSideEffects', 'Common'), tagType: 'teal' };
+      case 'SERIOUS':
+        return { label: t('seriousSideEffects', 'Serious'), tagType: 'magenta' };
+      default:
+        return { label: classification || t('otherSideEffects', 'Other'), tagType: 'gray' };
+    }
+  };
 
-  const renderGroup = (label: string, items: Array<SideEffect>, tagType: 'teal' | 'magenta') =>
+  const rank = (classification: string | undefined) =>
+    classification === 'COMMON' ? 0 : classification === 'SERIOUS' ? 1 : 2;
+
+  const grouped = new Map<string | undefined, Array<SideEffect>>();
+  for (const sideEffect of sideEffects) {
+    const key = sideEffect.classification || undefined;
+    const bucket = grouped.get(key);
+    if (bucket) {
+      bucket.push(sideEffect);
+    } else {
+      grouped.set(key, [sideEffect]);
+    }
+  }
+  const groups = Array.from(grouped.keys()).sort((a, b) => rank(a) - rank(b));
+
+  const renderGroup = (key: string, label: string, items: Array<SideEffect>, tagType: TagType) =>
     items.length > 0 && (
-      <div className={styles.group}>
+      <div key={key} className={styles.group}>
         <span className={styles.groupLabel}>{label}</span>
         <div className={styles.badges}>
           {items.map((sideEffect) => (
@@ -71,8 +96,10 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   return (
     <div className={styles.container}>
       <span className={styles.title}>{t('knownSideEffects', 'Known side effects')}</span>
-      {renderGroup(t('commonSideEffects', 'Common'), common, 'teal')}
-      {renderGroup(t('seriousSideEffects', 'Serious'), serious, 'magenta')}
+      {groups.map((classification) => {
+        const { label, tagType } = groupMeta(classification);
+        return renderGroup(classification ?? 'unknown', label, grouped.get(classification) ?? [], tagType);
+      })}
       <InlineNotification
         kind="info"
         lowContrast

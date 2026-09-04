@@ -27,14 +27,8 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   }
 
   if (error) {
-    return (
-      <InlineNotification
-        kind="warning"
-        lowContrast
-        hideCloseButton
-        title={t('sideEffectsLoadError', 'Unable to load side effects')}
-      />
-    );
+    console.error('Unable to load medication side effects', error);
+    return null;
   }
 
   if (!sideEffects.length) {

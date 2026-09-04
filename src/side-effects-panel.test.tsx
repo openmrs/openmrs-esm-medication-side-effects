@@ -51,13 +51,14 @@ describe('SideEffectsPanel', () => {
     expect(screen.getByText('Tinnitus')).toBeInTheDocument();
   });
 
-  it('renders nothing when the feature is disabled', () => {
+  it('renders nothing and does not fetch when the feature is disabled', () => {
     mockUseConfig.mockReturnValue({ displaySideEffects: false });
     mockUseMedicationSideEffects.mockReturnValue({ sideEffects: [], error: null, isLoading: false });
 
     const { container } = render(<SideEffectsPanel drugUuid="drug-uuid" />);
 
     expect(container).toBeEmptyDOMElement();
+    expect(mockUseMedicationSideEffects).toHaveBeenCalledWith(undefined);
   });
 
   it('renders nothing when no drug is selected', () => {
@@ -68,15 +69,18 @@ describe('SideEffectsPanel', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('shows a warning notification when the side effects fail to load', () => {
+  it('renders nothing and logs when the side effects fail to load', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [],
       error: new Error('boom'),
       isLoading: false,
     });
 
-    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+    const { container } = render(<SideEffectsPanel drugUuid="drug-uuid" />);
 
-    expect(screen.getByText(/Unable to load side effects/i)).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });

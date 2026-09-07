@@ -7,9 +7,9 @@ implemented and maintained in exactly one place.
 
 ## How it works
 
-- The panel is registered as an extension named `sideEffectsPanel` and plugged into two slots:
-  - `drug-order-form-side-effects-slot` — rendered on the drug order form in the patient chart.
-  - `dispensing-prescription-side-effects-slot` — rendered on the prescription details in the dispensing app.
+- The panel component is exported as `sideEffectsPanel` and registered as two extensions, one per slot:
+  - `medication-side-effects-panel` in `drug-order-form-side-effects-slot` — rendered on the drug order form in the patient chart.
+  - `medication-side-effects-panel-dispensing` in `dispensing-prescription-side-effects-slot` — rendered on the prescription details in the dispensing app.
 - A host renders the slot and passes the selected drug's uuid via slot state, e.g.:
 
   ```tsx

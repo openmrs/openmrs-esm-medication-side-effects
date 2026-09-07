@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InlineNotification, SkeletonText, Tag, Tooltip } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
@@ -18,6 +18,12 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   const { displaySideEffects } = useConfig<ConfigObject>();
   const { sideEffects, error, isLoading } = useMedicationSideEffects(displaySideEffects ? drugUuid : undefined);
 
+  useEffect(() => {
+    if (error) {
+      console.error('Unable to load medication side effects', error);
+    }
+  }, [error]);
+
   if (!displaySideEffects || !drugUuid) {
     return null;
   }
@@ -27,7 +33,6 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   }
 
   if (error) {
-    console.error('Unable to load medication side effects', error);
     return null;
   }
 
@@ -72,7 +77,7 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
                 {sideEffect.name}
               </Tag>
               {sideEffect.action && (
-                <Tooltip align="bottom" label={sideEffect.action}>
+                <Tooltip align="bottom" description={sideEffect.action}>
                   <button
                     type="button"
                     className={styles.actionTrigger}

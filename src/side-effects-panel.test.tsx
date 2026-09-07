@@ -83,4 +83,12 @@ describe('SideEffectsPanel', () => {
     expect(consoleError).toHaveBeenCalled();
     consoleError.mockRestore();
   });
+
+  it('renders nothing when the drug has no recorded side effects', () => {
+    mockUseMedicationSideEffects.mockReturnValue({ sideEffects: [], error: null, isLoading: false });
+
+    const { container } = render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    expect(container).toBeEmptyDOMElement();
+  });
 });

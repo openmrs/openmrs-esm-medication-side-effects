@@ -39,6 +39,10 @@
   margin: 0;
 }
 
+.badge :global(.cds--tag) {
+  max-inline-size: 100%;
+}
+
 .actionTrigger {
   display: inline-flex;
   align-items: center;

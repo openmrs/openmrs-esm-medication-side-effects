@@ -1,0 +1,14 @@
+name: Pull translations from Transifex
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily at 20:30 UTC
+    - cron: '30 20 * * *'
+
+jobs:
+  pull-translations:
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/tx-pull.yml@main
+    secrets:
+      TRANSIFEX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
+      BOT_GH_TOKEN: ${{ secrets.OMRS_BOT_GH_TOKEN }}

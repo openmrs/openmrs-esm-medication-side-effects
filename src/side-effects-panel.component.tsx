@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InlineNotification, SkeletonText, Tag, Tooltip } from '@carbon/react';
+import { InlineNotification, Tag, Tooltip } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
 import { useConfig } from '@openmrs/esm-framework';
 import { type ConfigObject } from './config-schema';
@@ -16,7 +16,7 @@ type TagType = 'teal' | 'magenta' | 'gray';
 const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
   const { t } = useTranslation();
   const { displaySideEffects } = useConfig<ConfigObject>();
-  const { sideEffects, error, isLoading } = useMedicationSideEffects(displaySideEffects ? drugUuid : undefined);
+  const { sideEffects, error } = useMedicationSideEffects(displaySideEffects ? drugUuid : undefined);
 
   useEffect(() => {
     if (error) {
@@ -26,10 +26,6 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
 
   if (!displaySideEffects || !drugUuid) {
     return null;
-  }
-
-  if (isLoading) {
-    return <SkeletonText paragraph lineCount={2} className={styles.skeleton} />;
   }
 
   if (error) {

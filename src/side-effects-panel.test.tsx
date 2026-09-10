@@ -34,6 +34,25 @@ describe('SideEffectsPanel', () => {
     expect(screen.getByText(/Counsel the patient/i)).toBeInTheDocument();
   });
 
+  it('lists every side effect that shares a classification', () => {
+    mockUseMedicationSideEffects.mockReturnValue({
+      sideEffects: [
+        { id: '1', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Headache', classification: 'COMMON' },
+        { id: '3', name: 'Dizziness', classification: 'COMMON' },
+      ],
+      error: null,
+      isLoading: false,
+    });
+
+    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    expect(screen.getAllByText('Common')).toHaveLength(1);
+    expect(screen.getByText('Nausea')).toBeInTheDocument();
+    expect(screen.getByText('Headache')).toBeInTheDocument();
+    expect(screen.getByText('Dizziness')).toBeInTheDocument();
+  });
+
   it('gives an unrecognised classification its own heading instead of folding it into Common', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [

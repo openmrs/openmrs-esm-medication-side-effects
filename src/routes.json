@@ -8,12 +8,14 @@
     {
       "name": "medication-side-effects-panel",
       "component": "sideEffectsPanel",
-      "slot": "drug-order-form-side-effects-slot"
+      "slot": "drug-order-form-side-effects-slot",
+      "privileges": "Get Medication Side Effects"
     },
     {
       "name": "medication-side-effects-panel-dispensing",
       "component": "sideEffectsPanel",
-      "slot": "dispensing-prescription-side-effects-slot"
+      "slot": "dispensing-prescription-side-effects-slot",
+      "privileges": "Get Medication Side Effects"
     }
   ]
 }

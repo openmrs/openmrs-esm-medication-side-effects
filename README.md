@@ -47,3 +47,7 @@ yarn verify # lint, test and type-check
 Requires the [`medicationsideeffects`](https://github.com/openmrs/openmrs-module-medicationsideeffects)
 OpenMRS module, which exposes the REST resource consumed here. Side-effect data is loaded via the
 Initializer module.
+
+Both extensions declare the `Get Medication Side Effects` privilege. The backend module registers it but
+grants it to no role, so until the distribution grants it the panel is absent for every non-superuser,
+with no request made and nothing logged.

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useSWRImmutable from 'swr/immutable';
 import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 
@@ -30,12 +31,16 @@ export function useMedicationSideEffects(drugUuid?: string) {
 
   const { data, error, isLoading } = useSWRImmutable<{ data: MedicationSideEffectResponse }>(url, openmrsFetch);
 
-  const sideEffects: Array<SideEffect> = (data?.data?.results ?? []).map((result) => ({
-    id: result.uuid,
-    name: result.display,
-    classification: result.classification,
-    action: result.recommendedAction,
-  }));
+  const sideEffects: Array<SideEffect> = useMemo(
+    () =>
+      (data?.data?.results ?? []).map((result) => ({
+        id: result.uuid,
+        name: result.display,
+        classification: result.classification,
+        action: result.recommendedAction,
+      })),
+    [data],
+  );
 
   return { sideEffects, error, isLoading };
 }

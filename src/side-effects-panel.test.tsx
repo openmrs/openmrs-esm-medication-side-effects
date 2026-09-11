@@ -34,6 +34,23 @@ describe('SideEffectsPanel', () => {
     expect(screen.getByText(/Counsel the patient/i)).toBeInTheDocument();
   });
 
+  it('exposes the recommended action as the description of a named trigger', () => {
+    mockUseMedicationSideEffects.mockReturnValue({
+      sideEffects: [
+        { id: '1', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
+      ],
+      error: null,
+      isLoading: false,
+    });
+
+    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    const trigger = screen.getByRole('button', { name: 'Recommended action' });
+    expect(trigger).toHaveAccessibleDescription('Stop the drug immediately');
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+  });
+
   it('lists every side effect that shares a classification', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [

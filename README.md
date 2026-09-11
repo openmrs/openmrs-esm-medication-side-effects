@@ -34,6 +34,19 @@ implemented and maintained in exactly one place.
 Because the flag lives in this microfrontend, a single configuration controls the feature everywhere
 it is injected. It can still be scoped per slot through the standard OpenMRS extension configuration.
 
+Note that `displaySideEffects: false` only stops the panel rendering. It is invisible to
+`getAssignedExtensions`, so a host that lays itself out according to whether this slot is filled (the
+dispensing app does) still leaves room for a panel that never appears. To switch the feature off for a
+whole distribution, remove the extension from the slot rather than setting the flag to `false`:
+
+```json
+"extensionSlots": {
+  "dispensing-prescription-side-effects-slot": {
+    "remove": ["medication-side-effects-panel-dispensing"]
+  }
+}
+```
+
 ## Development
 
 ```sh

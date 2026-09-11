@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.openmrs.org/routes.schema.json",
+  "backendDependencies": {
+    "webservices.rest": ">=2.2.0",
+    "medicationsideeffects": ">=1.0.0"
+  },
+  "extensions": [
+    {
+      "name": "medication-side-effects-panel",
+      "component": "sideEffectsPanel",
+      "slot": "drug-order-form-side-effects-slot",
+      "privileges": "Get Medication Side Effects"
+    },
+    {
+      "name": "medication-side-effects-panel-dispensing",
+      "component": "sideEffectsPanel",
+      "slot": "dispensing-prescription-side-effects-slot",
+      "privileges": "Get Medication Side Effects"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+@use '@carbon/layout';
+@use '@carbon/type';
+
+.container {
+  margin: layout.$spacing-05 0 layout.$spacing-07;
+}
+
+.title {
+  display: block;
+  @include type.type-style('heading-compact-01');
+  margin-bottom: layout.$spacing-03;
+}
+
+.group {
+  margin-bottom: layout.$spacing-04;
+}
+
+.groupLabel {
+  display: block;
+  @include type.type-style('label-01');
+  color: var(--cds-text-secondary, #525252);
+  margin-bottom: layout.$spacing-02;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: layout.$spacing-03;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: layout.$spacing-02;
+}
+
+.tag {
+  margin: 0;
+}
+
+.badge :global(.cds--tag) {
+  max-inline-size: 100%;
+}
+
+.actionTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+svg.actionIcon {
+  fill: #da1e28;
+  vertical-align: middle;
+}
+
+.counsel {
+  margin-top: layout.$spacing-05;
+  max-width: 100%;
+}

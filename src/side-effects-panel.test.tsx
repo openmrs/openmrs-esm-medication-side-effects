@@ -70,6 +70,23 @@ describe('SideEffectsPanel', () => {
     expect(screen.getByText('Dizziness')).toBeInTheDocument();
   });
 
+  it('orders the groups Common, Serious, then anything else, whatever order the records arrive in', () => {
+    mockUseMedicationSideEffects.mockReturnValue({
+      sideEffects: [
+        { id: '1', name: 'Tinnitus', classification: 'RARE' },
+        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS' },
+        { id: '3', name: 'Nausea', classification: 'COMMON' },
+      ],
+      error: null,
+      isLoading: false,
+    });
+
+    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    const headings = screen.getAllByText(/^(Common|Serious|RARE)$/).map((heading) => heading.textContent);
+    expect(headings).toEqual(['Common', 'Serious', 'RARE']);
+  });
+
   it('gives an unrecognised classification its own heading instead of folding it into Common', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [

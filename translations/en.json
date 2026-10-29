@@ -1,8 +1,11 @@
 {
   "commonSideEffects": "Common",
-  "counselPatientOnSideEffects": "Counsel the patient on the above side effects",
-  "knownSideEffects": "Known side effects",
+  "counselPatientOnSideEffects": "Counsel the patient on these side effects.",
+  "hideDetails": "Hide details",
   "otherSideEffects": "Other",
   "recommendedAction": "Recommended action",
-  "seriousSideEffects": "Serious"
+  "seriousSideEffects": "Serious",
+  "showDetails": "Show details",
+  "sideEffectDetails": "Side effect details",
+  "sideEffects": "Side effects"
 }

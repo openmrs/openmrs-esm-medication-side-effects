@@ -2,63 +2,123 @@
 @use '@carbon/type';
 
 .container {
-  margin: layout.$spacing-05 0 layout.$spacing-07;
+  margin-top: layout.$spacing-03;
+  @include type.type-style('body-compact-01');
+  color: var(--cds-text-primary, #161616);
 }
 
-.title {
-  display: block;
-  @include type.type-style('heading-compact-01');
-  margin-bottom: layout.$spacing-03;
-}
-
-.group {
-  margin-bottom: layout.$spacing-04;
-}
-
-.groupLabel {
-  display: block;
-  @include type.type-style('label-01');
-  color: var(--cds-text-secondary, #525252);
-  margin-bottom: layout.$spacing-02;
-}
-
-.badges {
+.header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: layout.$spacing-03;
+  column-gap: layout.$spacing-04;
+  row-gap: layout.$spacing-02;
 }
 
-.badge {
+.title {
+  @include type.type-style('heading-compact-01');
+  letter-spacing: 0.32px;
+  color: var(--cds-text-primary, #161616);
+}
+
+.count {
   display: inline-flex;
   align-items: center;
-  gap: layout.$spacing-02;
+  column-gap: layout.$spacing-02;
 }
 
-.tag {
-  margin: 0;
+.serious {
+  color: var(--cds-text-error, #da1e28);
+  font-weight: 600;
 }
 
-.badge :global(.cds--tag) {
-  max-inline-size: 100%;
+svg.seriousIcon {
+  flex: none;
+  fill: var(--cds-support-error, #da1e28);
 }
 
-.actionTrigger {
+.toggle {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  column-gap: layout.$spacing-02;
   padding: 0;
   border: none;
   background: transparent;
+  color: var(--cds-link-primary, #0f62fe);
+  font: inherit;
   cursor: pointer;
+
+  svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cds-focus, #0f62fe);
+    outline-offset: 1px;
+  }
 }
 
-svg.actionIcon {
-  fill: #da1e28;
-  vertical-align: middle;
+.details {
+  margin-top: layout.$spacing-03;
+  padding: layout.$spacing-04 layout.$spacing-05;
+  background-color: var(--cds-layer-01, #f4f4f4);
+}
+
+.group + .group {
+  margin-top: layout.$spacing-04;
+}
+
+.groupLabel {
+  display: flex;
+  align-items: center;
+  column-gap: layout.$spacing-02;
+  margin-bottom: layout.$spacing-02;
+  @include type.type-style('heading-compact-01');
+}
+
+.list {
+  list-style: disc;
+  padding-left: layout.$spacing-05;
+
+  li + li {
+    margin-top: layout.$spacing-02;
+  }
+}
+
+.action {
+  display: block;
+  color: var(--cds-text-secondary, #525252);
+
+  &::before {
+    content: '→ ' / '';
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .counsel {
-  margin-top: layout.$spacing-05;
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  column-gap: layout.$spacing-03;
+  margin-top: layout.$spacing-04;
+  padding-top: layout.$spacing-04;
+  border-top: 1px solid var(--cds-border-subtle-01, #c6c6c6);
+  @include type.type-style('heading-compact-01');
+  color: var(--cds-text-primary, #161616);
+}
+
+svg.counselIcon {
+  flex: none;
+  fill: var(--cds-support-info, #0043ce);
 }

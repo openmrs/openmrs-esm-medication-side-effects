@@ -1,6 +1,7 @@
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useConfig } from '@openmrs/esm-framework';
 import SideEffectsPanel from './side-effects-panel.component';
 import { useMedicationSideEffects } from './side-effects.resource';
@@ -15,48 +16,12 @@ describe('SideEffectsPanel', () => {
     mockUseConfig.mockReturnValue({ displaySideEffects: true });
   });
 
-  it('renders common and serious side effects with a counselling note', () => {
-    mockUseMedicationSideEffects.mockReturnValue({
-      sideEffects: [
-        { id: '1', name: 'Nausea', classification: 'COMMON' },
-        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
-      ],
-      error: null,
-      isLoading: false,
-    });
-
-    render(<SideEffectsPanel drugUuid="drug-uuid" />);
-
-    expect(screen.getByText('Common')).toBeInTheDocument();
-    expect(screen.getByText('Serious')).toBeInTheDocument();
-    expect(screen.getByText('Nausea')).toBeInTheDocument();
-    expect(screen.getByText('Anaphylaxis')).toBeInTheDocument();
-    expect(screen.getByText(/Counsel the patient/i)).toBeInTheDocument();
-  });
-
-  it('exposes the recommended action as the description of a named trigger', () => {
-    mockUseMedicationSideEffects.mockReturnValue({
-      sideEffects: [
-        { id: '1', name: 'Nausea', classification: 'COMMON' },
-        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
-      ],
-      error: null,
-      isLoading: false,
-    });
-
-    render(<SideEffectsPanel drugUuid="drug-uuid" />);
-
-    const trigger = screen.getByRole('button', { name: 'Recommended action' });
-    expect(trigger).toHaveAccessibleDescription('Stop the drug immediately');
-    expect(screen.getAllByRole('button')).toHaveLength(1);
-  });
-
-  it('lists every side effect that shares a classification', () => {
+  it('shows only a count per classification while collapsed', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [
         { id: '1', name: 'Nausea', classification: 'COMMON' },
         { id: '2', name: 'Headache', classification: 'COMMON' },
-        { id: '3', name: 'Dizziness', classification: 'COMMON' },
+        { id: '3', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
       ],
       error: null,
       isLoading: false,
@@ -64,30 +29,65 @@ describe('SideEffectsPanel', () => {
 
     render(<SideEffectsPanel drugUuid="drug-uuid" />);
 
-    expect(screen.getAllByText('Common')).toHaveLength(1);
-    expect(screen.getByText('Nausea')).toBeInTheDocument();
-    expect(screen.getByText('Headache')).toBeInTheDocument();
-    expect(screen.getByText('Dizziness')).toBeInTheDocument();
+    expect(screen.getByText('SIDE EFFECTS')).toBeInTheDocument();
+    expect(screen.getByText('1 serious')).toBeInTheDocument();
+    expect(screen.getByText('2 common')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show details' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText('Nausea')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Stop the drug immediately/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Counsel the patient/i)).not.toBeInTheDocument();
   });
 
-  it('orders the groups Common, Serious, then anything else, whatever order the records arrive in', () => {
+  it('expands to every side effect with its recommended action and a counselling note, and collapses again', async () => {
+    const user = userEvent.setup();
+    mockUseMedicationSideEffects.mockReturnValue({
+      sideEffects: [
+        { id: '1', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS', action: 'Stop the drug immediately' },
+      ],
+      error: null,
+      isLoading: false,
+    });
+
+    render(<SideEffectsPanel drugUuid="drug-uuid" />);
+
+    await user.click(screen.getByRole('button', { name: 'Show details' }));
+
+    const toggle = screen.getByRole('button', { name: 'Hide details' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    const details = screen.getByRole('region', { name: 'Side effect details' });
+    expect(toggle).toHaveAttribute('aria-controls', details.id);
+    expect(within(details).getByText('Nausea')).toBeInTheDocument();
+    expect(within(details).getByText('Anaphylaxis')).toBeInTheDocument();
+    expect(within(details).getByText('Stop the drug immediately')).toBeInTheDocument();
+    expect(within(details).getByText(/Counsel the patient/i)).toBeInTheDocument();
+
+    await user.click(toggle);
+
+    expect(screen.getByRole('button', { name: 'Show details' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('region', { name: 'Side effect details' })).not.toBeInTheDocument();
+  });
+
+  it('orders the groups Serious, Common, then anything else, whatever order the records arrive in', async () => {
+    const user = userEvent.setup();
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [
         { id: '1', name: 'Tinnitus', classification: 'RARE' },
-        { id: '2', name: 'Anaphylaxis', classification: 'SERIOUS' },
-        { id: '3', name: 'Nausea', classification: 'COMMON' },
+        { id: '2', name: 'Nausea', classification: 'COMMON' },
+        { id: '3', name: 'Anaphylaxis', classification: 'SERIOUS' },
       ],
       error: null,
       isLoading: false,
     });
 
     render(<SideEffectsPanel drugUuid="drug-uuid" />);
+    await user.click(screen.getByRole('button', { name: 'Show details' }));
 
-    const headings = screen.getAllByText(/^(Common|Serious|RARE)$/).map((heading) => heading.textContent);
-    expect(headings).toEqual(['Common', 'Serious', 'RARE']);
+    const headings = screen.getAllByRole('heading').map((heading) => heading.textContent);
+    expect(headings).toEqual(['Serious', 'Common', 'RARE']);
   });
 
-  it('gives an unrecognised classification its own heading instead of folding it into Common', () => {
+  it('gives an unrecognised classification its own group instead of folding it into Common', () => {
     mockUseMedicationSideEffects.mockReturnValue({
       sideEffects: [
         { id: '1', name: 'Nausea', classification: 'COMMON' },
@@ -99,9 +99,8 @@ describe('SideEffectsPanel', () => {
 
     render(<SideEffectsPanel drugUuid="drug-uuid" />);
 
-    expect(screen.getByText('Common')).toBeInTheDocument();
-    expect(screen.getByText('RARE')).toBeInTheDocument();
-    expect(screen.getByText('Tinnitus')).toBeInTheDocument();
+    expect(screen.getByText('1 common')).toBeInTheDocument();
+    expect(screen.getByText('1 rare')).toBeInTheDocument();
   });
 
   it('renders nothing and does not fetch when the feature is disabled', () => {

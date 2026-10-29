@@ -22,8 +22,9 @@ implemented and maintained in exactly one place.
   GET /ws/rest/v1/medicationsideeffect?drug={drugUuid}
   ```
 
-  Records are grouped into **Common** and **Serious**; each side effect with a recommended action
-  shows a warning icon whose tooltip carries the counselling guidance.
+  The panel is collapsed by default to a single line with a count per classification (e.g.
+  "2 serious, 3 common"). Expanding it lists every side effect grouped by classification, Serious first,
+  with its recommended action and a counselling reminder.
 
 ## Configuration
 
@@ -34,10 +35,8 @@ implemented and maintained in exactly one place.
 Because the flag lives in this microfrontend, a single configuration controls the feature everywhere
 it is injected. It can still be scoped per slot through the standard OpenMRS extension configuration.
 
-Note that `displaySideEffects: false` only stops the panel rendering. It is invisible to
-`getAssignedExtensions`, so a host that lays itself out according to whether this slot is filled (the
-dispensing app does) still leaves room for a panel that never appears. To switch the feature off for a
-whole distribution, remove the extension from the slot rather than setting the flag to `false`:
+Setting `displaySideEffects: false` stops the panel rendering and fetching. To switch the panel off in
+a single host, remove the extension from that slot instead:
 
 ```json
 "extensionSlots": {

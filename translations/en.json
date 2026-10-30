@@ -1,10 +1,14 @@
 {
   "commonSideEffects": "Common",
+  "commonSideEffectsCount_one": "{{count}} common",
+  "commonSideEffectsCount_other": "{{count}} common",
   "counselPatientOnSideEffects": "Counsel the patient on these side effects.",
   "hideDetails": "Hide details",
   "otherSideEffects": "Other",
   "recommendedAction": "Recommended action",
   "seriousSideEffects": "Serious",
+  "seriousSideEffectsCount_one": "{{count}} serious",
+  "seriousSideEffectsCount_other": "{{count}} serious",
   "showDetails": "Show details",
   "sideEffectDetails": "Side effect details",
   "sideEffects": "Side effects"

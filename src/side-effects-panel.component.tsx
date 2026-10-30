@@ -46,6 +46,17 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
     }
   };
 
+  const countLabel = (classification: string | undefined, count: number) => {
+    switch (classification) {
+      case 'COMMON':
+        return t('commonSideEffectsCount', '{{count}} common', { count });
+      case 'SERIOUS':
+        return t('seriousSideEffectsCount', '{{count}} serious', { count });
+      default:
+        return `${count} ${groupLabel(classification).toLowerCase()}`;
+    }
+  };
+
   const rank = (classification: string | undefined) =>
     classification === 'SERIOUS' ? 0 : classification === 'COMMON' ? 1 : 2;
 
@@ -63,6 +74,7 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
     .sort((a, b) => rank(a) - rank(b))
     .map((classification) => ({
       key: classification ?? 'unknown',
+      classification,
       label: groupLabel(classification),
       serious: classification === 'SERIOUS',
       items: grouped.get(classification) ?? [],
@@ -75,10 +87,10 @@ const SideEffectsPanel: React.FC<SideEffectsPanelProps> = ({ drugUuid }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.title}>{t('sideEffects', 'Side effects').toUpperCase()}</span>
-        {groups.map(({ key, label, serious, items }) => (
+        {groups.map(({ key, classification, serious, items }) => (
           <span key={key} className={seriousClass(styles.count, serious)}>
             {serious && <WarningFilled size={16} className={styles.seriousIcon} />}
-            {`${items.length} ${label.toLowerCase()}`}
+            {countLabel(classification, items.length)}
           </span>
         ))}
         <button
